@@ -13,7 +13,7 @@ export function App() {
   const { data: paginatedTransactions, ...paginatedTransactionsUtils } = usePaginatedTransactions()
   const { data: transactionsByEmployee, ...transactionsByEmployeeUtils } = useTransactionsByEmployee()
   const [isLoading, setIsLoading] = useState(false)
-  var hideViewMore: boolean
+  const [hideViewMore, setHideViewMore] = useState(false)
 
   const transactions = useMemo(
     () => paginatedTransactions?.data ?? transactionsByEmployee ?? null,
@@ -63,7 +63,8 @@ export function App() {
             if (newValue === null) {
               return
             }
-            hideViewMore = newValue.id ? true : false
+            setHideViewMore(newValue.id !== "" ? true : false)
+            //console.log("UpdatedHideViewMore:: " + hideViewMore)
             //if id is not null ore empty fetch employee records
             //else fetch all records
             newValue.id ? await loadTransactionsByEmployee(newValue.id) : await loadAllTransactions()
@@ -74,7 +75,6 @@ export function App() {
 
         <div className="RampGrid">
           <Transactions transactions={transactions} />
-
           {transactions !== null && paginatedTransactions?.nextPage !== null && !hideViewMore && (
             <button
               className="RampButton"
